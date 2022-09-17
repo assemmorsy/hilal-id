@@ -3,6 +3,7 @@ import { projectAuth } from '@/firebase/config'
 import Login from '../views/Login.vue'
 import Employee from '../views/Employee.vue'
 import Admin from '../views/Admin.vue'
+import PrintView from "../views/PrintView.vue"
 
 
 // path guards
@@ -41,6 +42,12 @@ const routes = [
     path: '/:id',
     name: 'employee',
     component: Employee,
+    props: true
+  },
+  {
+    path: '/print/:id',
+    name: 'print',
+    component: PrintView,
     props: true
   },
 ]

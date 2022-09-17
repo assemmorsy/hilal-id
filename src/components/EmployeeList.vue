@@ -46,12 +46,13 @@
               <i class="bi bi-qr-code"></i>
             </button>
 
-            <!-- <button
+            <router-link
               class="btn btn-outline-primary rounded-3 mx-1"
-              @click="handlePrint(employee)"
+              :to="{ name: 'print', params: { id: employee.id } }"
+              target="_blank"
             >
               <i class="bi bi-printer"></i>
-            </button> -->
+            </router-link>
 
             <router-link
               class="btn btn-outline-secondary rounded-3 mx-1"
@@ -84,9 +85,8 @@
         currentDoc = null;
       "
     />
-    <div class="row justify-content-center">
+    <div class="row justify-content-center" v-if="currentDoc">
       <qrcode-vue
-        v-if="currentDoc"
         :value="`https://hilal-id.web.app/${currentDoc.id}`"
         :size="qrSize"
         level="M"
@@ -94,9 +94,6 @@
         ref="qrElm"
       />
     </div>
-    <!-- <div class="row justify-content-center" v-if="currentDoc" ref="printElm">
-      <PrintEmployee :employee="currentDoc" />
-    </div> -->
   </div>
 </template>
 
@@ -105,7 +102,6 @@ import DeleteEmployeeModal from "./DeleteEmployeeModal.vue";
 import { ref } from "vue";
 import UpdateEmployeeModal from "./UpdateEmployeeModal.vue";
 import QrcodeVue from "qrcode.vue";
-import PrintEmployee from "@/components/PrintEmployee.vue";
 import { jsPDF } from "jspdf";
 import "svg2pdf.js";
 export default {
@@ -113,15 +109,12 @@ export default {
     DeleteEmployeeModal,
     UpdateEmployeeModal,
     QrcodeVue,
-    PrintEmployee,
-    PrintEmployee,
   },
   props: ["employees"],
   setup(props) {
     const isUpdateModalVisible = ref(false);
     const isDeleteModalVisible = ref(false);
     const qrElm = ref(null);
-    const printElm = ref(null);
     const qrSize = ref(200);
     const currentDoc = ref(null);
     const handleDelete = (employee) => {
@@ -131,18 +124,6 @@ export default {
     const handleUpdate = (employee) => {
       isUpdateModalVisible.value = true;
       currentDoc.value = employee;
-    };
-    const handlePrint = (employee) => {
-      currentDoc.value = employee;
-      setTimeout(() => {
-        const doc = new jsPDF();
-        console.log(printElm.value);
-        if (printElm.value) {
-          doc.html(printElm.value);
-          doc.save(`${employee.name}_printCard.pdf`);
-          currentDoc.value = null;
-        }
-      }, 500);
     };
     const handleQr = (employee) => {
       currentDoc.value = employee;
@@ -171,10 +152,8 @@ export default {
 
     return {
       qrSize,
-      printElm,
       handleUpdate,
       handleQr,
-      handlePrint,
       qrElm,
       handleDelete,
       isDeleteModalVisible,
